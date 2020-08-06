@@ -1,0 +1,10 @@
+###
+# aws deployment-bucket overrides.
+# default profile: ${stage}-loanpal.${region}.deploys
+#
+# deployment buckets must be globally unique. so different name per stage.
+# values defined here override the defualt to support stages still deployed in the master account
+#
+prod: loanpal.${self:provider.region}.deploys
+sandbox: loanpal.${self:provider.region}.deploys
+default: ${self:provider.stage}-loanpal.${self:provider.region}.deploys

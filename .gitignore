@@ -1,0 +1,5 @@
+node_modules
+.serverless
+
+# stage-specific vpc config
+vpc.*.yml

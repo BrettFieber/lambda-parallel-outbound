@@ -1,0 +1,20 @@
+{
+  "name": "event-stream-performance",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Brett Fieber <bfieber@loanpal.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "aws-sdk": "^2.671.0",
+    "serverless-pseudo-parameters": "^2.5.0",
+    "uuid": "^8.0.0"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.0"
+  }
+}

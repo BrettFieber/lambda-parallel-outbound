@@ -1,0 +1,6 @@
+securityGroupIds:
+  # - sg-1234567890  # replace with sgId from your env
+subnetIds:
+  # - subnet-1234567890  # replace with subnetid from your env
+  # - subnet-1234567891  # replace with subnetid from your env
+  # - subnet-1234567892  # replace with subnetid from your env

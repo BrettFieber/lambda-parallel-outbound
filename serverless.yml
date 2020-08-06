@@ -1,0 +1,98 @@
+service: parallel-lambda-http-test-one
+
+plugins:
+  - serverless-pseudo-parameters
+
+custom:
+  deploymentBuckets:  ${file(./serverless/deployment-buckets.yml)}
+  aggregatorVpc:
+    ${file(./vpc.${self:provider.stage}.yml), file(./vpc.yml)}  # comment out to disable aggregator vpc - ignore deploy warning
+  workerVpc:
+    ${file(./vpc.${self:provider.stage}.yml), file(./vpc.yml)}  # comment out to disable worker vpc - ignore deploy warning
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage}
+  profile: ${self:provider.stage}-profile
+  region: ${opt:region, 'us-west-2'}
+  deploymentBucket:
+    name: ${self:custom.deploymentBuckets.${self:provider.stage}, self:custom.deploymentBuckets.default}
+    serverSideEncryption: AES256
+  versionFunctions: false
+  timeout: 60
+  stackTags:
+    STACK: ${self:service}
+    REGION: ${self:provider.region}
+  environment:
+    TZ: America/Los_Angeles # Make all Lambdas run with clocks set to California timezone
+    STAGE: ${self:provider.stage}
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource:
+        - arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:*
+functions:
+  # aggregator function
+  # acts as entry point and launches 8 worker functions in parallel
+  aggregator:
+    handler: src/aggregator.handle
+    environment:
+      FUNCTION_NAME: '${self:service}-aggregator'
+      FUNCTION_PREFIX: '${self:service}-${self:provider.stage}-'
+    vpc:
+      ${self:custom.aggregatorVpc}
+
+  # work functions
+  # created as 8 distinct Lambdas to simulate being different data sources.
+  workerOne:
+    handler: src/worker.handle
+    environment:
+      FUNCTION_NAME: '${self:service}-${self:provider.stage}-workerOne'
+    vpc:
+      ${self:custom.workerVpc}
+  workerTwo:
+    handler: src/worker.handle
+    environment:
+      FUNCTION_NAME: '${self:service}-${self:provider.stage}-workerTwo'
+    vpc:
+      ${self:custom.workerVpc}
+  workerThree:
+    handler: src/worker.handle
+    environment:
+      FUNCTION_NAME: '${self:service}-${self:provider.stage}-workerThree'
+    vpc:
+      ${self:custom.workerVpc}
+  workerFour:
+    handler: src/worker.handle
+    environment:
+      FUNCTION_NAME: '${self:service}-${self:provider.stage}-workerFour'
+    vpc:
+      ${self:custom.workerVpc}
+  workerFive:
+    handler: src/worker.handle
+    environment:
+      FUNCTION_NAME: '${self:service}-${self:provider.stage}-workerFive'
+    vpc:
+      ${self:custom.workerVpc}
+  workerSix:
+    handler: src/worker.handle
+    environment:
+      FUNCTION_NAME: '${self:service}-${self:provider.stage}-workerSix'
+    vpc:
+      ${self:custom.workerVpc}
+  workerSeven:
+    handler: src/worker.handle
+    environment:
+      FUNCTION_NAME: '${self:service}-${self:provider.stage}-workerSeven'
+    vpc:
+      ${self:custom.workerVpc}
+  workerEight:
+    handler: src/worker.handle
+    environment:
+      FUNCTION_NAME: '${self:service}-${self:provider.stage}-workerEight'
+    vpc:
+      ${self:custom.workerVpc}
